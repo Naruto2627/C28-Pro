@@ -3,63 +3,96 @@ const World= Matter.World;
 const Bodies = Matter.Bodies;
 const Constraint = Matter.Constraint;
 
-var engine, world;
-var ground,ball;
-var binImg,bin;
+var engine,world;
+var ground,platform1,platform2;
 
 function preload(){
-    binImg = loadImage("Images/dustbingreen.png");
-}
-function setup(){
-    var canvas = createCanvas(1200,600);
-    engine = Engine.create();
-    world = engine.world;
-
-    ground = new Ground();
-    crumpledPaper = new Paper();
-
-    bin = createSprite(964,520,20,20);
-    bin.addImage(binImg);
-    bin.scale = 0.45;
-
-    binPart1 = new Dustbin(910,505,1,120);
-    binPart2 = new Dustbin(962,565,110,10);
-    binPart3 = new Dustbin(1015,505,10,120);
-
-    launcher = new Launcher(crumpledPaper.body,{x:370,y:270});
+  polygonImg = loadImage("Images/hexagon1.png");
 }
 
-function draw(){
-    background("pink");
-    Engine.update(engine);
+function setup() {
+  createCanvas(1500,700);
 
-    //text(mouseX+","+mouseY,200,200);
+  engine = Engine.create();
+  world = engine.world;
 
-    ground.display();
-    crumpledPaper.display();
-    binPart1.display();
-    binPart2.display();
-    binPart3.display(); 
-      
+  var lego = createSprite(50,50,20,20);
+  lego.scale = 0.4;
 
-    drawSprites();
-    
-    fill("blue");
-    textStyle(BOLD);
-    textSize(52);
-    text("CRUMPLED BALLS 3",385,45);
+  platform1 = new Ground(424,554,720,10);
+  ground = new Ground(750,680,1500,24);
+  
+  var polygon_options ={
+    'restitution':0.02,
+    'friction':0.5,
+    'density':1.2
+  }
+  polygon = Bodies.circle(1200,450,30,polygon_options);
+  World.add(world,polygon);
+
+  block1 = new Block7(125,511);
+  block2 = new Block7(225,511);
+  block3 = new Block7(325,511);
+  block4 = new Block7(425,511);
+  block5 = new Block7(525,511);
+  block6 = new Block7(625,511);
+  block7 = new Block7(725,511);
+
+  block8 = new Block5(225,450);
+  block9 = new Block5(325,450);
+  block10 = new Block5(425,450);
+  block11 = new Block5(525,450);
+  block12 = new Block5(625,450);
+  
+  block13 = new Block3(325,230);
+  block14 = new Block3(425,230);
+  block15 = new Block3(525,230);
+
+  block16 = new Block1(425,140);
+
+  slingshot = new Slingshot(this.polygon,{x:1200,y:450});
 }
 
-/*function keyPressed(){
-    if(keyCode === UP_ARROW){
-        Matter.Body.applyForce(crumpledPaper.body,crumpledPaper.body.position,{x:74,y:-75});
-    }
-}*/
+function draw() {
+  background(0);  
+  Engine.update(engine);
+
+  fill("#00FFFF")
+  textSize(40);
+  text("Drag and release the polygon to hit  blocks.",300,60);
+
+  platform1.display();
+  ground.display();
+  
+  imageMode(CENTER);
+  image(polygonImg,polygon.position.x,polygon.position.y,60,50);
+
+  block1.display();
+  block2.display();
+  block3.display();
+  block4.display();
+  block5.display();
+  block6.display();
+  block7.display();
+  block8.display();
+  block9.display();
+  block10.display();
+  block11.display();
+  block12.display();
+  block13.display();
+  block14.display();
+  block15.display();
+  block16.display();
+
+  slingshot.display();
+
+  drawSprites();
+}
 
 function mouseDragged(){
-    Matter.Body.setPosition(crumpledPaper.body,{x:mouseX,y:mouseY});
+  Matter.Body.setPosition(this.polygon, {x: mouseX , y: mouseY});
 }
 
 function mouseReleased(){
-    launcher.fly();
+  slingshot.fly();
 }
